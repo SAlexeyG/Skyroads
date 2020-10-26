@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject gameStartText;
     [SerializeField] private GamePlayingScript gamePlayingScript;
     [SerializeField] private GameOverScript gameOverScript;
+    [SerializeField] private AudioSource audioSource;
 
     enum GameState
     {
@@ -54,7 +55,11 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        player.OnAsteroidSmash += GameOver;
+        player.OnAsteroidSmash += delegate {
+            audioSource.Play();
+            GameOver();
+        };
+
         OnScoreChange += delegate
         {
             gamePlayingScript.SetUIValues(
@@ -68,7 +73,11 @@ public class GameManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        player.OnAsteroidSmash -= GameOver;
+        player.OnAsteroidSmash -= delegate {
+            audioSource.Play();
+            GameOver();
+        };
+
         OnScoreChange -= delegate
         {
             gamePlayingScript.SetUIValues(
